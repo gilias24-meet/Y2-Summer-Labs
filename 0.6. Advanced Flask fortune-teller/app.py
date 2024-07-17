@@ -11,13 +11,11 @@ def home():
 
 @app .route('/fortune')
 def fortune():
-	fortunes = ["Death", "wealth", "happiness", "joy", "sadness", "love", "hate", "anger", "boredom", "stress"]
-	index_f = random.randint(0, 9)
-	f = fortunes(index_f)
+	fortunes = ["You  will never submit the lab on time", "you will only have du until the end of the week", "you will lose your water bottle", "you will not be on time for complementary", "you will eat IASA food forever", "Your computer will die,", "you will win the entrp contest", "you wiil have no free time,", "your pet will die,", "tomorrow you will discover something shocking"]
+	i = random.randint(0, 9)
+	f = fortunes[i]
 
-
-
-	return render_template("fortune.html")
+	return render_template("fortune.html", f = f)
 
 if __name__ == '__main__':
 	app.run(debug=True)
