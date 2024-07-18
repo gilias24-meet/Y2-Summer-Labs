@@ -17,6 +17,7 @@ def home():
 
 
 
+
 @app.route('/fortune/<string:b>')
 def fortune(b):
 	fortunes = ["You  will never submit the lab on time", "you will only have du until the end of the week", "you will lose your water bottle", "you will not be on time for complementary", "you will eat IASA food forever", "Your computer will die,", "you will win the entrp contest", "you wiil have no free time,", "your pet will die,", "tomorrow you will discover something shocking"]
@@ -35,5 +36,7 @@ def fortune(b):
 
 if __name__ == '__main__':
 	app.run(debug = True, port='3000')
+
+
 
 	
