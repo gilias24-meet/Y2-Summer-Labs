@@ -10,8 +10,7 @@ def home():
 		return render_template("hello.html")
 	else:
 		birth = request.form['birth']
-		print("We got the birthmonth from the form!!!!!!!")
-		print(birth)
+	
 		return redirect(url_for('fortune',
             b = birth))
 
@@ -22,16 +21,14 @@ def home():
 def fortune(b):
 	fortunes = ["You  will never submit the lab on time", "you will only have du until the end of the week", "you will lose your water bottle", "you will not be on time for complementary", "you will eat IASA food forever", "Your computer will die,", "you will win the entrp contest", "you wiil have no free time,", "your pet will die,", "tomorrow you will discover something shocking"]
 	l =len(b)
-	print ("len of fortunes")
-	print(len(fortunes))
-	print ("l is:" , l)
+
 
 	if len(b) <= 9:
 		f = fortunes[l]
-		print ("if")
+		
 	else:
 		f = "You  will never submit the lab on time"
-		print ("else")
+		
 	return render_template("fortune.html", f = f)
 
 if __name__ == '__main__':
