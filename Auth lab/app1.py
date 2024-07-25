@@ -1,42 +1,79 @@
 from flask import Flask, render_template, request, url_for, redirect, session as login_session
 import random
-app = Flask(__name__,
-template_folder='templates',
-static_folder='static')
+import pyrebase
 
-app.config['SECRET_KEY'] = "secret_key"
+app = Flask(__name__, template_folder='templates', static_folder='static')
+
+                                    
+firebaseConfig = {'databaseURL': "https://authentication-lab-f4a56-default-rtdb.firebaseio.com/",'apiKey': "AIzaSyB41V1D7NnEzJ8T3Nm8ClHu7L2slYpcKCU",
+  'authDomain': "authentication-lab-f4a56.firebaseapp.com",
+  'projectId': "authentication-lab-f4a56",
+  'storageBucket': "authentication-lab-f4a56.appspot.com",
+  'messagingSenderId': "747400524819",
+  'appId': "1:747400524819:web:89f8e3a0ff00f982d77be6",
+  'measurementId': "G-B7PFEQ49M3"}
+
+firebase = pyrebase.initialize_app(firebaseConfig) 
+auth = firebase.auth()
+
+app.config['SECRET_KEY'] = 'super-secret-key'
 
 @app.route('/', methods=['GET', 'POST'])
-def login():
-	if request.method == 'POST':
-		birth = request.form['birth']
-		username = request.form['username']
-		if username == 'gili':
-			login_session['gili'] = True
-		return redirect(url_for('home', b = birth))
-	return render_template("login.html")
+def signup():
+  if request.method == "GET": 
+    return render_template("signup.html")
+  else:
+    try:
+      email = request.form["username"]
+      passwored = request.form['passwored']
+      login_session["user"] = auth.create_user_with_email_and_password(email, passwored)
+      login_session['quotes'] = []
+      return render_template("home.html")
+    except:
+      return render_template("signup.html")
+
+@app.route('/signin', methods=['GET', 'POST'])
+def signin():
+  if request.method == "GET":
+    return render_template("signin.html")
+
+  try:
+    email = request.form["username"]
+    passwored = request.form['passwored']
+    login_session["user"] = auth.sign_in_with_email_and_password(email, passwored)
+    return redirect(url_for("home"))
+  except:
+    return render_template("signin.html")
 
 
-@app.route('/home')
-def home(b):
-   if 'gili' in login_session:
-       if login_session['gili'] == True:
-           return render_template("fortune.html")
+@app.route('/home', methods=['GET', 'POST'])
+def home():
+  
+  if request.method == "POST":
+    quotes = request.form["quotes"]
+    login_session['quotes'] = quotes`
+    login_session.modified = True
+
+    return redirect(url_for("thanks"))
+  return render_template("home.html")
+
+@app.route('/thanks', methods=['GET', 'POST'])
+def thanks():
+
+   return render_template("thanks.html")
+
+@app.route('/display' ,  methods=['GET', 'POST'])
+def display():
+  return render_template("display.html" , quotes = login_session['quotes'])
 
 
-@app.route('/fortune/<string:b>')
-def fortune(b):
-	fortunes = ["You  will never submit the lab on time", "you will only have du until the end of the week", "you will lose your water bottle", "you will not be on time for complementary", "you will eat IASA food forever", "Your computer will die,", "you will win the entrp contest", "you wiil have no free time,", "your pet will die,", "tomorrow you will discover something shocking"]
-	l =len(b)
+@app.route('/signout', methods=['GET', 'POST'])
+def signout():
+   return render_template("signin.html", )
 
-	if len(b) <= 9:
-		f = fortunes[l]
-		
-	else:
-		f = "You  will never submit the lab on time"
-		
-	return render_template("fortune.html", f = f)
 
 if __name__ == '__main__':
-	app.run(debug = True, port='3000')
+  app.run(debug = True, port='2000')
+
+
 
